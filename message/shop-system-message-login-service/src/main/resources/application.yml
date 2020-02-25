@@ -1,0 +1,43 @@
+auth-server-url: http://localhost:9001 # 授权服务地址
+
+spring:
+  application:
+    name: message-login-service
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 192.168.163.133:8848
+    stream:
+      rocketmq:
+        binder:
+          name-server: 192.168.163.135:9876
+      bindings:
+        login-log-topic:
+          destination: login-log-topic
+          content-type: application/json
+server:
+  port: 10001
+dubbo:
+  scan:
+    base-packages: com.cosmax.shop.system.message.login
+  protocol:
+    name: dubbo
+    serialization: kryo
+    port: -1
+
+  registry:
+    address: nacos://192.168.163.133:8848
+    port: 80
+
+security:
+  oauth2:
+    client:
+      client-id: client
+      client-secret: secret
+      access-token-uri: ${auth-server-url}/oauth/token
+      user-authorization-uri: ${auth-server-url}/oauth/authorize
+    resource:
+      token-info-uri: ${auth-server-url}/oauth/check_token
+feign:
+  sentinel:
+    enabled: true

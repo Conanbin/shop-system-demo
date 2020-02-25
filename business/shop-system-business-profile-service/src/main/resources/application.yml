@@ -1,0 +1,36 @@
+auth-server-url: http://localhost:9001 # 授权服务地址
+
+spring:
+  application:
+    name: business-profile
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 192.168.163.133:8848
+server:
+  port: 9002
+dubbo:
+  scan:
+    base-packages: com.cosmax.shop.system.bussiness.profile
+  protocol:
+    name: dubbo
+    serialization: kryo
+    port: -1
+
+  registry:
+    address: nacos://192.168.163.133:8848
+    port: 80
+
+
+security:
+  oauth2:
+    client:
+      client-id: client
+      client-secret: secret
+      access-token-uri: ${auth-server-url}/oauth/token
+      user-authorization-uri: ${auth-server-url}/oauth/authorize
+    resource:
+      token-info-uri: ${auth-server-url}/oauth/check_token
+feign:
+  sentinel:
+    enabled: true
